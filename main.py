@@ -27,7 +27,7 @@ from pages.about_page import query_for_all_tuples
 
 # Themes? Try FLATLY, LUX, QUARTZ
 # https://towardsdatascience.com/3-easy-ways-to-make-your-dash-application-look-better-3e4cfefaf772
-app = dash.Dash(__name__, external_stylesheets=[dbc.themes.FLATLY])
+app = dash.Dash(__name__, external_stylesheets=[dbc.themes.FLATLY], host='0.0.0.0', port=8050)
 app.config.suppress_callback_exceptions = True
 app.title = 'world.ly'
 
