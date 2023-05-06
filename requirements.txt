@@ -5,3 +5,4 @@ pandas
 plotly
 dash-iconify
 numpy
+oracledb
