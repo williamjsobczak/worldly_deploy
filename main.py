@@ -25,10 +25,7 @@ import graphs.line_graph as line_graph
 
 from pages.about_page import query_for_all_tuples
 
-from flask import Flask
-from wsgi import server
-
-server = Flask(__name__)
+from server import server
 
 
 # Themes? Try FLATLY, LUX, QUARTZ
