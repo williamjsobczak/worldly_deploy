@@ -38,6 +38,7 @@ df_complex_5 = functions.query_db(query_string_complex_globe_5)
 
 
 # ---------------------------------------------------------------------------------------------- FIX FIRST GLOBE ----------------------------------------------------------------------------------------------
+df_complex_1.dropna(subset=['COUNTRY', 'CODE'], inplace=True)
 unique_country_code_combos_1 = df_complex_1.groupby(['COUNTRY', 'CODE']).size().reset_index().drop(0, axis=1)
 unique_country_code_combos_1.drop_duplicates()
 
@@ -54,6 +55,7 @@ for index, row in unique_country_code_combos_1.iterrows():
 # ---------------------------------------------------------------------------------------------- FIX SECOND GLOBE ----------------------------------------------------------------------------------------------
 
 # Get unique country code combinations from complex 2 dataframe
+df_complex_2.dropna(subset=['ENTITY', 'CODE'], inplace=True)
 unique_country_code_combos_2 = df_complex_2.groupby(['ENTITY', 'CODE']).size().reset_index().drop(0, axis=1)
 unique_country_code_combos_2.drop_duplicates()
 # print(unique_country_code_combos_2.head(30))
@@ -75,6 +77,7 @@ df_complex_2.fillna(0, inplace=True)
 
 # ---------------------------------------------------------------------------------------------- FIX THIRD GLOBE ----------------------------------------------------------------------------------------------
 
+df_complex_3.dropna(subset=['ENTITY', 'CODE'], inplace=True)
 unique_country_code_combos_3 = df_complex_3.groupby(['ENTITY', 'CODE']).size().reset_index().drop(0, axis=1)
 unique_country_code_combos_3.drop_duplicates()
 
@@ -90,6 +93,7 @@ for index, row in unique_country_code_combos_3.iterrows():
 
 # ---------------------------------------------------------------------------------------------- FIX FOURTH GLOBE ----------------------------------------------------------------------------------------------
 
+df_complex_4.dropna(subset=['ENTITY', 'CODE'], inplace=True)
 unique_country_code_combos_4 = df_complex_4.groupby(['ENTITY', 'CODE']).size().reset_index().drop(0, axis=1)
 unique_country_code_combos_4.drop_duplicates()
 
@@ -106,6 +110,7 @@ for index, row in unique_country_code_combos_4.iterrows():
 
 # ---------------------------------------------------------------------------------------------- FIX FIFTH GLOBE ----------------------------------------------------------------------------------------------
 
+df_complex_5.dropna(subset=['ENTITY', 'CODE'], inplace=True)
 unique_country_code_combos_5 = df_complex_5.groupby(['ENTITY', 'CODE']).size().reset_index().drop(0, axis=1)
 unique_country_code_combos_5.drop_duplicates()
 
