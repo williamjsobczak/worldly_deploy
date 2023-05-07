@@ -46,7 +46,7 @@ for index, row in unique_country_code_combos_1.iterrows():
     country = row['COUNTRY']
     code = row['CODE']
     new_row = pd.Series({'YEAR': 1985, 'CODE': code, 'COUNTRY': country, 'TOTAL_ELECTRICITY_PRODUCTION_IN_TWH' : 0, 'CO2_EMISSIONS_METRIC_TONS': 0, 'PRIMARY_ELECTRICITY_SOURCE': 0})
-    df_complex_1 = pd.concat([df_complex_1, new_row], ignore_index=True)
+    df_complex_1 = df_complex_1.append([df_complex_1, new_row], ignore_index=True)
     # df_complex_1.fillna(0, inplace=True)
 
 # ---------------------------------------------------------------------------------------------- FIX FIRST GLOBE ----------------------------------------------------------------------------------------------
@@ -63,7 +63,7 @@ for index, row in unique_country_code_combos_2.iterrows():
     entity = row['ENTITY']
     code = row['CODE']
     new_row = pd.Series({'YEAR': 1753, 'CODE': code, 'ENTITY': entity, 'LIFE_EXPECTANCY_AT_BIRTH': None, 'LIFE_EXPECTANCY_PERCENTILE': None, 'DIFFERENCE_IN_PUBLIC_HEALTH_EXPENDITURE_PERCENTAGE_OF_GDP_TO_YEARS_AVERAGE': None})
-    df_complex_2 = pd.concat([df_complex_2, new_row], ignore_index=True)
+    df_complex_2 = df_complex_2.append([df_complex_2, new_row], ignore_index=True)
 
 # Fill all the NaN values with 0
 df_complex_2.fillna(0, inplace=True)
@@ -83,7 +83,7 @@ for index, row in unique_country_code_combos_3.iterrows():
     entity = row['ENTITY']
     code = row['CODE']
     new_row = pd.Series({'YEAR': 1950, 'CODE': code, 'ENTITY': entity, 'GDP_PER_CAPITA': 0, 'GDP_PER_CAPITA_PERCENT_GROWTH': 0, 'DIFFERENCE_IN_PER_CAPITA_ENERGY_USE_IN_KWH_COMPARED_TO_THE_YEARLY_AVERAGE': 0})
-    df_complex_3 = pd.concat([df_complex_3, new_row], ignore_index=True)
+    df_complex_3 = df_complex_3.append([df_complex_3, new_row], ignore_index=True)
     # df_complex_3.fillna(0, inplace=True)
 # ---------------------------------------------------------------------------------------------- FIX THIRD GLOBE ----------------------------------------------------------------------------------------------
 
@@ -98,7 +98,7 @@ for index, row in unique_country_code_combos_4.iterrows():
     entity = row['ENTITY']
     code = row['CODE']
     new_row = pd.Series({'YEAR': 1990, 'CODE': code, 'ENTITY': entity, 'HDI_INDEX' : 0})
-    df_complex_4 = pd.concat([df_complex_4, new_row], ignore_index=True)
+    df_complex_4 = df_complex_4.append([df_complex_4, new_row], ignore_index=True)
     # df_complex_4.fillna(0, inplace=True)
 
 # ---------------------------------------------------------------------------------------------- FIX FOURTH GLOBE ----------------------------------------------------------------------------------------------
@@ -114,7 +114,7 @@ for index, row in unique_country_code_combos_5.iterrows():
     entity = row['ENTITY']
     code = row['CODE']
     new_row = pd.Series({'YEAR': 1961, 'CODE': code, 'ENTITY': entity, 'POPULATION_DENSITY': 0, 'DIFFERENCE_IN_ENERGY_CONSUMPTION_PER_CAPITA_IN_KWH': 0, 'DIFFERENCE_IN_FOREST_AREA_SQUARE_KM': 0, 'DIFFERENCE_IN_DEFORESTATION_SQUARE_KM': 0, 'DIFFERENCE_IN_PERCENT_OF_ADULTS_OVERWEIGHT' : 0, 'DIFFERENCE_IN_CO2_EMISSIONS_METRIC_TONS' : 0, 'DIFFERENCE_IN_AVG_LITERACY_RATE' : 0})
-    df_complex_5 = pd.concat([df_complex_5, new_row], ignore_index=True)
+    df_complex_5 = df_complex_5.append([df_complex_5, new_row], ignore_index=True)
     # df_complex_5.fillna(0, inplace=True)
 
 # SORT FIFTH DF
