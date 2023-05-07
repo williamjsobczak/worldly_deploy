@@ -236,5 +236,5 @@ def update_continent_line_graph(metric):
 
 
 if __name__ == '__main__':
-    server.run()
+    server.run_server()
     
