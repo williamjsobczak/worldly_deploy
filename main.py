@@ -223,6 +223,9 @@ def update_continent_line_graph(metric):
         return line_graph.render_line_graph_continent(metric)
 
 
+# if __name__ == '__main__':
+#     app.run()
+#     # app.run_server(debug=True)
+
 if __name__ == '__main__':
-    app.run()
-    # app.run_server(debug=True)
+    app.run(host='0.0.0.0', port=8050)
