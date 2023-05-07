@@ -40,13 +40,13 @@ df_complex_5 = functions.query_db(query_string_complex_globe_5)
 # ---------------------------------------------------------------------------------------------- FIX FIRST GLOBE ----------------------------------------------------------------------------------------------
 df_complex_1.dropna(subset=['COUNTRY', 'CODE'], inplace=True)
 unique_country_code_combos_1 = df_complex_1.groupby(['COUNTRY', 'CODE']).size().reset_index().drop(0, axis=1)
-unique_country_code_combos_1.drop_duplicates()
+unique_country_code_combos_1.drop_duplicates(inplace=True)
 
 # Append the new rows to the dataframe in a loop to fill in the missing years in complex_4
 for index, row in unique_country_code_combos_1.iterrows():
     country = row['COUNTRY']
     code = row['CODE']
-    new_row = pd.Series({'YEAR': 1985, 'CODE': code, 'COUNTRY': country, 'TOTAL_ELECTRICITY_PRODUCTION_IN_TWH' : 0, 'CO2_EMISSIONS_METRIC_TONS': 0, 'PRIMARY_ELECTRICITY_SOURCE': 0})
+    new_row = pd.DataFrame({'YEAR': 1985, 'CODE': code, 'COUNTRY': country, 'TOTAL_ELECTRICITY_PRODUCTION_IN_TWH' : 0, 'CO2_EMISSIONS_METRIC_TONS': 0, 'PRIMARY_ELECTRICITY_SOURCE': 0}, index=[0])
     df_complex_1 = pd.concat([df_complex_1, new_row], ignore_index=True)
     # df_complex_1.fillna(0, inplace=True)
 
@@ -57,14 +57,14 @@ for index, row in unique_country_code_combos_1.iterrows():
 # Get unique country code combinations from complex 2 dataframe
 df_complex_2.dropna(subset=['ENTITY', 'CODE'], inplace=True)
 unique_country_code_combos_2 = df_complex_2.groupby(['ENTITY', 'CODE']).size().reset_index().drop(0, axis=1)
-unique_country_code_combos_2.drop_duplicates()
+unique_country_code_combos_2.drop_duplicates(inplace=True)
 # print(unique_country_code_combos_2.head(30))
 
 # Append the new rows to the dataframe in a loop to fill in the missing years in complex_2
 for index, row in unique_country_code_combos_2.iterrows():
     entity = row['ENTITY']
     code = row['CODE']
-    new_row = pd.Series({'YEAR': 1753, 'CODE': code, 'ENTITY': entity, 'LIFE_EXPECTANCY_AT_BIRTH': None, 'LIFE_EXPECTANCY_PERCENTILE': None, 'DIFFERENCE_IN_PUBLIC_HEALTH_EXPENDITURE_PERCENTAGE_OF_GDP_TO_YEARS_AVERAGE': None})
+    new_row = pd.DataFrame({'YEAR': 1753, 'CODE': code, 'ENTITY': entity, 'LIFE_EXPECTANCY_AT_BIRTH': None, 'LIFE_EXPECTANCY_PERCENTILE': None, 'DIFFERENCE_IN_PUBLIC_HEALTH_EXPENDITURE_PERCENTAGE_OF_GDP_TO_YEARS_AVERAGE': None}, index=[0])
     df_complex_2 = pd.concat([df_complex_2, new_row], ignore_index=True)
 
 # Fill all the NaN values with 0
@@ -79,13 +79,13 @@ df_complex_2.fillna(0, inplace=True)
 
 df_complex_3.dropna(subset=['ENTITY', 'CODE'], inplace=True)
 unique_country_code_combos_3 = df_complex_3.groupby(['ENTITY', 'CODE']).size().reset_index().drop(0, axis=1)
-unique_country_code_combos_3.drop_duplicates()
+unique_country_code_combos_3.drop_duplicates(inplace=True)
 
 # Append the new rows to the dataframe in a loop to fill in the missing years in complex_3
 for index, row in unique_country_code_combos_3.iterrows():
     entity = row['ENTITY']
     code = row['CODE']
-    new_row = pd.Series({'YEAR': 1950, 'CODE': code, 'ENTITY': entity, 'GDP_PER_CAPITA': 0, 'GDP_PER_CAPITA_PERCENT_GROWTH': 0, 'DIFFERENCE_IN_PER_CAPITA_ENERGY_USE_IN_KWH_COMPARED_TO_THE_YEARLY_AVERAGE': 0})
+    new_row = pd.DataFrame({'YEAR': 1950, 'CODE': code, 'ENTITY': entity, 'GDP_PER_CAPITA': 0, 'GDP_PER_CAPITA_PERCENT_GROWTH': 0, 'DIFFERENCE_IN_PER_CAPITA_ENERGY_USE_IN_KWH_COMPARED_TO_THE_YEARLY_AVERAGE': 0}, index=[0])
     df_complex_3 = pd.concat([df_complex_3, new_row], ignore_index=True)
     # df_complex_3.fillna(0, inplace=True)
 # ---------------------------------------------------------------------------------------------- FIX THIRD GLOBE ----------------------------------------------------------------------------------------------
@@ -95,13 +95,13 @@ for index, row in unique_country_code_combos_3.iterrows():
 
 df_complex_4.dropna(subset=['ENTITY', 'CODE'], inplace=True)
 unique_country_code_combos_4 = df_complex_4.groupby(['ENTITY', 'CODE']).size().reset_index().drop(0, axis=1)
-unique_country_code_combos_4.drop_duplicates()
+unique_country_code_combos_4.drop_duplicates(inplace=True)
 
 # Append the new rows to the dataframe in a loop to fill in the missing years in complex_4
 for index, row in unique_country_code_combos_4.iterrows():
     entity = row['ENTITY']
     code = row['CODE']
-    new_row = pd.Series({'YEAR': 1990, 'CODE': code, 'ENTITY': entity, 'HDI_INDEX' : 0})
+    new_row = pd.DataFrame({'YEAR': 1990, 'CODE': code, 'ENTITY': entity, 'HDI_INDEX' : 0}, index =[0])
     df_complex_4 = pd.concat([df_complex_4, new_row], ignore_index=True)
     # df_complex_4.fillna(0, inplace=True)
 
@@ -112,13 +112,13 @@ for index, row in unique_country_code_combos_4.iterrows():
 
 df_complex_5.dropna(subset=['ENTITY', 'CODE'], inplace=True)
 unique_country_code_combos_5 = df_complex_5.groupby(['ENTITY', 'CODE']).size().reset_index().drop(0, axis=1)
-unique_country_code_combos_5.drop_duplicates()
+unique_country_code_combos_5.drop_duplicates(inplace=True)
 
 # Append the new rows to the dataframe in a loop to fill in the missing years in complex_4
 for index, row in unique_country_code_combos_5.iterrows():
     entity = row['ENTITY']
     code = row['CODE']
-    new_row = pd.Series({'YEAR': 1961, 'CODE': code, 'ENTITY': entity, 'POPULATION_DENSITY': 0, 'DIFFERENCE_IN_ENERGY_CONSUMPTION_PER_CAPITA_IN_KWH': 0, 'DIFFERENCE_IN_FOREST_AREA_SQUARE_KM': 0, 'DIFFERENCE_IN_DEFORESTATION_SQUARE_KM': 0, 'DIFFERENCE_IN_PERCENT_OF_ADULTS_OVERWEIGHT' : 0, 'DIFFERENCE_IN_CO2_EMISSIONS_METRIC_TONS' : 0, 'DIFFERENCE_IN_AVG_LITERACY_RATE' : 0})
+    new_row = pd.DataFrame({'YEAR': 1961, 'CODE': code, 'ENTITY': entity, 'POPULATION_DENSITY': 0, 'DIFFERENCE_IN_ENERGY_CONSUMPTION_PER_CAPITA_IN_KWH': 0, 'DIFFERENCE_IN_FOREST_AREA_SQUARE_KM': 0, 'DIFFERENCE_IN_DEFORESTATION_SQUARE_KM': 0, 'DIFFERENCE_IN_PERCENT_OF_ADULTS_OVERWEIGHT' : 0, 'DIFFERENCE_IN_CO2_EMISSIONS_METRIC_TONS' : 0, 'DIFFERENCE_IN_AVG_LITERACY_RATE' : 0}, index=[0])
     df_complex_5 = pd.concat([df_complex_5, new_row], ignore_index=True)
     # df_complex_5.fillna(0, inplace=True)
 
