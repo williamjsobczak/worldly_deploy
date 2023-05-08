@@ -32,6 +32,8 @@ app = dash.Dash(__name__, external_stylesheets=[dbc.themes.FLATLY])
 app.config.suppress_callback_exceptions = True
 app.title = 'world.ly'
 
+server = app.server
+
 # Main layout
 app.layout = html.Div([
     dcc.Location(id=ids.CURRENT_URL, refresh=False),
@@ -229,11 +231,12 @@ def update_continent_line_graph(metric):
 #     # app.run_server(debug=True)
 
 #working local
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8050)
-
-
 # if __name__ == '__main__':
-#     app.run_server()
+#     app.run(host='0.0.0.0', port=8050)
+
+
+if __name__ == '__main__':
+    app.run_server()
+
 
     
