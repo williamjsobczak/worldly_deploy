@@ -1,4 +1,4 @@
-from main import app as application
+from main import server
 
 if __name__ == '__main__':
-    application.run()
+    server.run(port=8050)
