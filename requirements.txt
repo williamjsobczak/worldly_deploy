@@ -6,4 +6,3 @@ plotly
 dash-iconify
 numpy
 oracledb
-waitress
