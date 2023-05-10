@@ -228,9 +228,9 @@ def update_continent_line_graph(metric):
 #     app.run()
 #     # app.run_server(debug=True)
 
-#working local
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8050)
+#working local - development mode on oracle vm
+# if __name__ == '__main__':
+#     app.run(host='0.0.0.0', port=8050)
 
 
 # if __name__ == '__main__':
