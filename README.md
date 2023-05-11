@@ -4,7 +4,7 @@
 
 1. Clone the world.ly repository on your local device
 
-2. Install the latest version of Python from the Microsoft Store (Version 3.11 latest as of now)
+2. Install the latest version of Python from the Microsoft Store
 
 3. Add Python Installation path to Environment System Variables
     - Search for 'Edit the system environment variables'
@@ -33,25 +33,25 @@
     - Type the path of the oracle installation (C:\Program Files\Oracle\instantclient_21_9)
     - Click 'OK', then 'OK' again, and then 'OK' a third time to close all the windows
     
-10. Download Microsoft C++ Build Tools (https://visualstudio.microsoft.com/visual-cpp-build-tools/)
+8.  Download Microsoft C++ Build Tools (https://visualstudio.microsoft.com/visual-cpp-build-tools/)
 
-11. Open Visual Studio Installer and click the 'Available' tab
+9.  Open Visual Studio Installer and click the 'Available' tab
 
-12. Then install 'Visual Studio Community 2022' (latest year available)
+10. Then install 'Visual Studio Community 2022' (latest year available)
     - When propmpted to install workloads, select 'Desktop development with C++' 
     - If this is not prompted, finish installing 'Visual Studio Community 2022'
         - Then go to the 'Installed' tab and select 'Modify' under 'Visual Studio Community 2022'
         - Select the box labled 'Desktop development with C++' and install
 
-13. After installing open a new Command Prompt
+11. After installing open a new Command Prompt
 
-14. Navigate to the 'world.ly' repository (i.e., C:\world.ly)
+12. Navigate to the 'world.ly' repository (i.e., C:\world.ly)
 
-15. Run 
+13. Run 
     
     'pip install -r requirements.txt'
     
-16. If prompted to, add any new paths in Environment System Variables, then re-run the last step
+14. If prompted to, add any new paths in Environment System Variables, then re-run the last step
 
 
 ## **Running On Local Host for Windows**
@@ -108,13 +108,6 @@
 
         python3 app.py
 4. Open http://127.0.0.1:8050/ on a web browser
-   
-
-
-### **UFL CISE Oracle Database Server Used**
-Username: williamsobczak <br />
-Password= REBY7TpizLTdOp5dZHa9qJS0
-
 
 
 ### **Credits:**
