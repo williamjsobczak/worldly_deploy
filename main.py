@@ -25,8 +25,6 @@ import graphs.line_graph as line_graph
 
 from pages.about_page import query_for_all_tuples
 
-from waitress import serve
-
 
 
 
@@ -233,11 +231,11 @@ def update_continent_line_graph(metric):
 #     # app.run_server(debug=True)
 
 #working local - development mode on oracle vm
-# if __name__ == '__main__':
-#     app.run(host='0.0.0.0', port=8050)
-
-
 if __name__ == '__main__':
-    serve(app, host='0.0.0.0', port=8050, debug=True)
+    app.run(host='0.0.0.0', port=8050)
+
+
+# if __name__ == '__main__':
+#     serve(app, host='0.0.0.0', port=8050, debug=True)
 
     
