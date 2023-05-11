@@ -25,6 +25,10 @@ import graphs.line_graph as line_graph
 
 from pages.about_page import query_for_all_tuples
 
+from waitress import serve
+
+
+
 
 # Themes? Try FLATLY, LUX, QUARTZ
 # https://towardsdatascience.com/3-easy-ways-to-make-your-dash-application-look-better-3e4cfefaf772
@@ -233,7 +237,7 @@ if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8050)
 
 
-# if __name__ == '__main__':
-#     app.run_server()
+if __name__ == '__main__':
+    serve(app, host='0.0.0.0', port=8050)
 
     
