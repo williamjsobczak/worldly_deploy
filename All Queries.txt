@@ -1,0 +1,324 @@
+-- TEMPLATED QUERY 1: Line Graphs
+
+--example
+SELECT entity, year, life_expectancy_at_birth
+FROM
+(
+SELECT continents.entity, continents.code, placeholder_table.year, placeholder_table.life_expectancy_at_birth , RANK() OVER(PARTITION BY year ORDER BY placeholder_table.life_expectancy_at_birth DESC) rank_num
+FROM LifeExpectancy placeholder_table, (SELECT entity, code, continent FROM Continents) continents
+WHERE year >= 1900 AND placeholder_table.life_expectancy_at_birth IS NOT NULL AND placeholder_table.code NOT LIKE '%OWID%' AND placeholder_table.code = continents.code
+)
+WHERE rank_num<=10
+
+--templated
+SELECT entity, year, <parameter>
+FROM
+(
+SELECT continents.entity, continents.code, placeholder_table.year, placeholder_table.<parameter> , RANK() OVER(PARTITION BY year ORDER BY placeholder_table.<parameter> <ordering>) rank_num
+FROM <table> placeholder_table, (SELECT entity, code, continent FROM Continents) continents
+WHERE year >= 1900 AND placeholder_table.<parameter> IS NOT NULL AND placeholder_table.code NOT LIKE '%OWID%' AND placeholder_table.code = continents.code
+)
+WHERE rank_num<=10
+
+
+-- Description: The query outputs, for each year of data available in the table of choice after 1900, 
+-- the countries that are in the top or bottom x number of countries in terms of its respective value for the 
+-- parameter selected on a yearly basis, as well as the year and parameter value.
+
+
+-- Fields to Fill:
+-- For parameter selection:
+-- Table Name : <table>
+-- Attribute : <parameter>
+
+-- For View selection
+-- For Top 10 Countries: <ordering> -> "DESC";
+-- For Bottom 10 Countries: <ordering> -> "";
+
+
+
+--By continent:
+SELECT continents.continent, year, AVG(  <parameter>)
+FROM   <table> table_placeholder, (SELECT entity, code, continent FROM Continents) continents
+WHERE   <parameter> IS NOT NULL AND continents.code =  table_placeholder.code AND table_placeholder.year >=1900
+GROUP BY continents.continent, year
+
+
+--Example
+SELECT continents.continent, year, AVG(  life_expectancy_at_birth)
+FROM   LifeExpectancy table_placeholder, (SELECT entity, code, continent FROM Continents) continents
+WHERE   life_expectancy_at_birth IS NOT NULL AND continents.code =  table_placeholder.code AND table_placeholder.year >=1900
+GROUP BY continents.continent, year
+
+-- Description: The query outputs, for each year avaialbe in the table of choice after 1900,
+-- all continents as well as the year and their respective average value for the selected parameter.
+
+-- Fields to Fill:
+-- For parameter selection:
+-- Table Name : <table>
+-- Attribute : <parameter>
+
+
+
+
+--TEMPLATED QUERY 2: SCATTER PLOT
+
+--example
+SELECT continents.entity, table1.life_expectancy_at_birth parameter1, table2.public_health_expenditure_percentage_of_gdp parameter2, table1.year
+FROM LifeExpectancy table1, PublicHealthGovExpenditureShareGDP table2, (SELECT entity, code, continent FROM Continents) continents
+WHERE table1.code = table2.code AND table1.year = table2.year AND continents.code = table1.code AND table1.code NOT LIKE '%OWID%' AND table1.life_expectancy_at_birth IS NOT NULL AND table2.public_health_expenditure_percentage_of_gdp IS NOT NULL
+ORDER BY table1.year ASC
+
+
+SELECT continents.entity, table1.{parameter1} parameter1, table2.{parameter2} parameter2, table1.year
+FROM {table1} table1, {table2} table2, (SELECT entity, code, continent FROM Continents) continents
+WHERE table1.code = table2.code AND table1.year = table2.year AND continents.code = table1.code AND table1.code NOT LIKE '%OWID%' AND table1.{parameter1} IS NOT NULL AND table2.{parameter2} IS NOT NULL
+ORDER BY table1.year ASC
+
+-- To replace: {table1}, {table2}, {parameter1}, {parameter2}
+
+--Description: The query joins two tables of interest based on user selection and outputs the two user selected parameters for each country and year (after 1900) combination, ensuring that null and global values are excluded.
+
+
+
+--___________COMPLEX GLOBE QUERIES___________
+
+
+--1: "Major Greenhouse Emitters with their Electricity Generation and Source"
+--Countries Constituting the Majority of Global Greenhouse Gas Emissions along with their Total Electricity 
+--Generation Quantity (TWh) and Primary Source
+
+WITH countries_contributing_to_75_percent_of_global_CO2_emissions AS
+(
+SELECT year, code, entity, CO2_emissions_metric_tons
+    FROM
+    (
+    SELECT cf1.year, entity, code, CO2_emissions_metric_tons,  SUM(CO2_emissions_metric_tons) over(PARTITION BY year ORDER BY CO2_emissions_metric_tons DESC) running_sum
+    FROM CarbonFootprint cf1
+    WHERE entity != 'World'
+    ORDER BY CO2_emissions_metric_tons DESC
+    ) cf1
+WHERE running_sum < (SELECT CO2_emissions_metric_tons*0.9 FROM CarbonFootprint WHERE entity = 'World' AND year = cf1.year)
+)
+
+SELECT year, code, entity country, (Electricity_from_coal_in_TWh + Electricity_fom_gas_in_TWh + Electricity_from_nuclear_in_TWh + Electricity_from_hydro_in_TWh + Electricity_from_solar_in_TWh + Electricity_from_oil_in_TWh + Electricity_from_wind_in_TWh) total_electricity_production_in_TWh, CO2_emissions_metric_tons,
+    Case
+        WHEN Electricity_from_coal_in_TWh > Electricity_fom_gas_in_TWh AND Electricity_from_coal_in_TWh > Electricity_from_nuclear_in_TWh AND Electricity_from_coal_in_TWh > Electricity_from_hydro_in_TWh AND Electricity_from_coal_in_TWh > Electricity_from_solar_in_TWh AND Electricity_from_coal_in_TWh > Electricity_from_oil_in_TWh AND Electricity_from_coal_in_TWh > Electricity_from_wind_in_TWh THEN 'Coal'
+        WHEN Electricity_fom_gas_in_TWh > Electricity_from_coal_in_TWh AND Electricity_fom_gas_in_TWh > Electricity_from_nuclear_in_TWh AND Electricity_fom_gas_in_TWh > Electricity_from_hydro_in_TWh AND Electricity_fom_gas_in_TWh > Electricity_from_solar_in_TWh AND Electricity_fom_gas_in_TWh > Electricity_from_oil_in_TWh AND Electricity_fom_gas_in_TWh > Electricity_from_wind_in_TWh THEN 'Gas'
+        WHEN Electricity_from_nuclear_in_TWh > Electricity_fom_gas_in_TWh AND Electricity_from_nuclear_in_TWh > Electricity_from_coal_in_TWh AND Electricity_from_nuclear_in_TWh > Electricity_from_hydro_in_TWh AND Electricity_from_nuclear_in_TWh > Electricity_from_solar_in_TWh AND Electricity_from_nuclear_in_TWh > Electricity_from_oil_in_TWh AND Electricity_from_nuclear_in_TWh > Electricity_from_wind_in_TWh THEN 'Nuclear'
+        WHEN Electricity_from_hydro_in_TWh > Electricity_fom_gas_in_TWh AND Electricity_from_hydro_in_TWh > Electricity_from_nuclear_in_TWh AND Electricity_from_hydro_in_TWh > Electricity_from_coal_in_TWh AND Electricity_from_hydro_in_TWh > Electricity_from_solar_in_TWh AND Electricity_from_hydro_in_TWh > Electricity_from_oil_in_TWh AND Electricity_from_hydro_in_TWh > Electricity_from_wind_in_TWh THEN 'Hydroelectric'
+        WHEN Electricity_from_solar_in_TWh > Electricity_fom_gas_in_TWh AND Electricity_from_solar_in_TWh > Electricity_from_nuclear_in_TWh AND Electricity_from_solar_in_TWh > Electricity_from_hydro_in_TWh AND Electricity_from_solar_in_TWh > Electricity_from_coal_in_TWh AND Electricity_from_solar_in_TWh > Electricity_from_oil_in_TWh AND Electricity_from_solar_in_TWh > Electricity_from_wind_in_TWh THEN 'Solar'
+        WHEN Electricity_from_oil_in_TWh > Electricity_fom_gas_in_TWh AND Electricity_from_oil_in_TWh > Electricity_from_nuclear_in_TWh AND Electricity_from_oil_in_TWh > Electricity_from_hydro_in_TWh AND Electricity_from_oil_in_TWh > Electricity_from_solar_in_TWh AND Electricity_from_oil_in_TWh > Electricity_from_coal_in_TWh AND Electricity_from_oil_in_TWh > Electricity_from_wind_in_TWh THEN 'Oil'
+        WHEN Electricity_from_wind_in_TWh > Electricity_fom_gas_in_TWh AND Electricity_from_wind_in_TWh > Electricity_from_nuclear_in_TWh AND Electricity_from_wind_in_TWh > Electricity_from_hydro_in_TWh AND Electricity_from_wind_in_TWh > Electricity_from_solar_in_TWh AND Electricity_from_wind_in_TWh > Electricity_from_oil_in_TWh AND Electricity_from_wind_in_TWh > Electricity_from_coal_in_TWh THEN 'Wind'
+        END AS primary_electricity_source
+FROM
+(
+    SELECT e.year, c.CO2_emissions_metric_tons, c.code, c.entity, Electricity_from_coal_in_TWh, Electricity_fom_gas_in_TWh, Electricity_from_nuclear_in_TWh, Electricity_from_hydro_in_TWh, Electricity_from_solar_in_TWh, Electricity_from_oil_in_TWh, Electricity_from_wind_in_TWh, Electricity_from_bioenergy_in_TWh, Other_renewables_excluding_bioenergy_in_TWh
+    FROM countries_contributing_to_75_percent_of_global_CO2_emissions c, ElectricityProductionBySource e
+    WHERE e.code = c.code AND e.year = c.year
+)
+ORDER BY year;
+
+-- Description: The map displays the countries which in combination constitute 90% of the world's Carbon Dioxide 
+-- emissions in a particular year (i.e., the largest carbon polluters). Additionally, for each of those countries, 
+-- the total CO2 emission for the particular is are displayed in metric tons, as is the total electricity production 
+-- (of the country) in TWh and the primary source of electricity.
+
+--2: "Highest Life Expectancies & Difference in Public Health Expenditure"
+--The map displays countries in the 90+ percentile for life expectancy for each year, along with the difference in
+ --their public health expenditure compared to the year's average (as percent of GDP).
+SELECT l.code, l.entity, l.year, life_expectancy_at_birth, life_expectancy_percentile, public_health_expenditure_percentage_of_gdp-avg_public_health_expenditure_percentage_of_gdp difference_in_public_health_expenditure_percentage_of_gdp_to_years_average
+FROM
+(
+    SELECT *
+    FROM
+    (
+    SELECT code, year, entity, life_expectancy_at_birth,  ROUND(PERCENT_RANK() OVER(PARTITION BY YEAR ORDER BY life_expectancy_at_birth),2) life_expectancy_percentile
+    FROM LifeExpectancy
+    ORDER BY year
+    )
+    WHERE life_expectancy_percentile > 0.9
+) l
+LEFT OUTER JOIN (SELECT code,year, public_health_expenditure_percentage_of_gdp, AVG(public_health_expenditure_percentage_of_gdp) OVER(PARTITION BY YEAR ORDER BY public_health_expenditure_percentage_of_gdp) avg_public_health_expenditure_percentage_of_gdp FROM PublicHealthGovExpenditureShareGDP) h
+ON (l.code = h.code AND l.year = h.year)
+
+
+--3: "Country with Highest GDP and Associated Parameters Per Continent"
+--In each continent, which country had the highest real GDP per capita. Display their corresponding percent 
+--growth in GDP as well as the difference in its per capita energy use compared to the average for that year 
+--on their respective continent
+SELECT RealGdpPerCapita.code, RealGdpPerCapita.entity, RealGdpPerCapita.year, GDP_per_capita, GDP_per_capita_percent_growth, Energy_consumption_per_capita_in_kwh - avg_Energy_consumption_per_capita_in_kwh difference_in_per_capita_energy_use_in_kwh_compared_to_the_yearly_average
+FROM
+(
+    SELECT RealGdpPerCapita.code, RealGdpPerCapita.entity, RealGdpPerCapita.year, GDP_per_capita, GDP_per_capita_percent_growth, max_real_gdp_per_capita_per_continent_and_year
+    FROM
+    (
+        SELECT RealGdpPerCapita.code, RealGdpPerCapita.entity, RealGdpPerCapita.year, GDP_per_capita, MAX(GDP_per_capita) OVER(PARTITION BY continent, RealGdpPerCapita.year) max_real_gdp_per_capita_per_continent_and_year
+        FROM RealGdpPerCapita, Continents
+        WHERE RealGdpPerCapita.code = Continents.code
+    ) RealGdpPerCapita
+    LEFT OUTER JOIN GdpPerCapitaGrowth ON (GdpPerCapitaGrowth.code = RealGdpPerCapita.code AND GdpPerCapitaGrowth.year = RealGdpPerCapita.year)
+    WHERE GDP_per_capita = max_real_gdp_per_capita_per_continent_and_year
+) RealGDPPerCapita
+LEFT OUTER JOIN 
+(
+SELECT EnergyPerPerson.code, EnergyPerPerson.year, Energy_consumption_per_capita_in_kwh, AVG(Energy_consumption_per_capita_in_kwh) OVER(PARTITION BY EnergyPerPerson.YEAR, continent) avg_Energy_consumption_per_capita_in_kwh 
+FROM EnergyPerPerson JOIN Continents ON (Continents.code = EnergyPerPerson.code)
+) EnergyPerPerson 
+ON RealGDPPerCapita.code = EnergyPerPerson.code AND RealGDPPerCapita.year = EnergyPerPerson.year
+ORDER BY YEAR
+
+--Description for (3): The map displays the country in each continent that has the highest real GDP per capita, along with the corresponding value (in 2016 USD) and the difference between its per capita energy use (in TWh) and that of the average of the year within the respective continent.
+
+--4: "Human Development Index"
+--HDI is a WHO measure of human development (index). The HDI is a function of average life expectancy, average number of years in schooling, and gross national income per capita.
+--The below query assigns a pseudo-HDI to each country for each year based on GNI per capita, average life expectancy at birth, and fraction of the population with primary, secondary, or tertiary education.
+--GNI = 1/3(life expectancy/max life expectancy) + 1/3(avg_years_in_school, distributed evenly between primary,secondary, and tertiary/max years in school) + 1/3(GNI/max GNI)
+--Note that HDI is calculated on a by country and year basis.
+
+
+--Description: Human Development Index (HDI) is a metric developed and employed by the World Health Organization
+-- (WHO) designed to summarize composite indicators for the developmental status of humans, most often applied to 
+--countries. It is a function of life expectancy at birth, mean number of years in schooling, and Gross Nataional 
+--Income (GNI) per capita. The worldy team has created a pseudo-HDI based on life expectancy at birth, GNI per 
+--capita, and percent of the population with primary, secondary, and tertiary educations. Each component is weighted
+--equally, and the education subset is also weighted equally between the three education levels. 
+--The index generated is therefore a composite measure in the form of a decimal between 0 and 1, with 
+--indices near the lower bound denoting a low composite developmental score and indices near the upper bound 
+--denoting a high composite developmental score. Note that the scale is relative and is capped at the maximum 
+--real-world values for the given year.
+
+SELECT GNI.entity, GNI.code, GNI.year, (GNI_index_contribution + life_expectancy_index_contribution + primary_education_index_contribution + secondary_education_index_contribution + tertiary_education_index_contribution) HDI_index
+FROM
+    (
+    SELECT entity, code, year, (gross_national_income_per_capita/max_GNI_per_capita)/3 GNI_index_contribution
+    FROM
+        (
+        SELECT entity, code, year, gross_national_income_per_capita, MAX(gross_national_income_per_capita) OVER(PARTITION BY YEAR) max_GNI_per_capita
+        FROM GrossNationalIncomePerCapita
+        )
+    ) GNI,    
+     
+    (   
+    SELECT entity, code, year, (life_expectancy_at_birth/max_life_expectancy)/3 life_expectancy_index_contribution
+    FROM
+        (
+        SELECT entity, code, year, life_expectancy_at_birth, MAX(life_expectancy_at_birth) OVER(PARTITION BY YEAR) max_life_expectancy
+        FROM LifeExpectancy
+        )
+    ) LifeExpectancy,    
+        
+    (        
+    SELECT entity, code, year, (primary_education_gross_enrollment_percent/max_primary_education_gross_enrollment_percent)/9 primary_education_index_contribution
+    FROM
+        (
+        SELECT entity, code, year, primary_education_gross_enrollment_percent, MAX(primary_education_gross_enrollment_percent) OVER(PARTITION BY YEAR) max_primary_education_gross_enrollment_percent
+        FROM GrossEnrollmentRatioInPrimaryEducation
+        )
+    ) primary,    
+        
+    (    
+    SELECT entity, code, year, (lower_secondary_education_completion_rate/max_lower_secondary_education_completion_rate)/9 secondary_education_index_contribution
+    FROM
+        (
+        SELECT entity, code, year, lower_secondary_education_completion_rate, MAX(lower_secondary_education_completion_rate) OVER(PARTITION BY YEAR) max_lower_secondary_education_completion_rate
+        FROM CompletionRateOfLowerSecondaryEducation
+        )
+    ) secondary,    
+    
+    (
+    SELECT entity, code, year, (percentage_with_tertiary_education/max_percentage_with_tertiary_education)/9 tertiary_education_index_contribution
+    FROM
+        (
+        SELECT entity, code, year, percentage_with_tertiary_education, MAX(percentage_with_tertiary_education) OVER(PARTITION BY YEAR) max_percentage_with_tertiary_education
+        FROM ShareOfThePopulationWithCompletedTertiaryEducation
+        )
+    ) tertiary
+WHERE GNI.code = LifeExpectancy.code AND GNI.year = LifeExpectancy.year AND GNI.code = primary.code AND GNI.year = primary.year AND GNI.code = secondary.code AND GNI.year = secondary.year AND GNI.code = tertiary.code AND GNI.year = tertiary.year
+ORDER BY year, HDI_index
+    
+
+--5: "Population Density Dependency of Associated Metrics"
+
+--The map displays countries and their respective population densities, 
+--as well as the following related parameters in terms of their deviation from the average on the given year, 
+--relative to all other countries on the continent: energy consumption per capita in kwh, forest area in km, 
+--deforestation in square km, percent of adults who are overweight, CO2 emissions in metric tons, and 
+--average literacy rate.
+
+WITH Energy AS
+(
+    SELECT entity, code, year, energy_consumption_per_capita_in_kwh - avg_energy_consumption_per_capita_in_kwh difference_in_energy_consumption_per_capita_in_kwh
+    FROM
+    (
+    SELECT Continents.entity, Continents.code, EnergyPerPerson.year, energy_consumption_per_capita_in_kwh, AVG(energy_consumption_per_capita_in_kwh) OVER(PARTITION BY EnergyPerPerson.year, continents.continent) avg_energy_consumption_per_capita_in_kwh
+    FROM EnergyPerPerson, Continents
+    WHERE EnergyPerPerson.code = Continents.code
+    )
+),
+
+Forest AS
+(
+    SELECT entity, code, year, Forest_area_square_km - avg_Forest_area_square_km difference_in_forest_area_square_km
+    FROM
+    (
+    SELECT Continents.entity, Continents.code, ForestArea.year, Forest_area_square_km, AVG(Forest_area_square_km) OVER(PARTITION BY ForestArea.year, continents.continent) avg_Forest_area_square_km
+    FROM ForestArea, Continents
+    WHERE ForestArea.code = Continents.code
+    )
+),
+
+Deforestation AS
+(
+    SELECT entity, code, year, Deforestation_square_km - avg_Deforestation_square_km difference_in_deforestation_square_km
+    FROM
+    (
+    SELECT Continents.entity, Continents.code, AnnualDeforestation.year, Deforestation_square_km, AVG(Deforestation_square_km) OVER(PARTITION BY AnnualDeforestation.year, continents.continent) avg_Deforestation_square_km
+    FROM AnnualDeforestation, Continents
+    WHERE AnnualDeforestation.code = Continents.code
+    )
+),
+
+Obesity AS
+(
+    SELECT entity, code, year, Percent_of_adults_overweight - avg_Percent_of_adults_overweight difference_in_percent_of_adults_overweight
+    FROM
+    (
+    SELECT Continents.entity, Continents.code, ShareOfAdultsWhoAreOverweight.year, Percent_of_adults_overweight, AVG(Percent_of_adults_overweight) OVER(PARTITION BY ShareOfAdultsWhoAreOverweight.year, continents.continent) avg_Percent_of_adults_overweight
+    FROM ShareOfAdultsWhoAreOverweight, Continents
+    WHERE ShareOfAdultsWhoAreOverweight.code = Continents.code
+    )
+),
+
+CO2 AS
+(
+    SELECT entity, code, year, CO2_emissions_metric_tons - avg_CO2_emissions_metric_tons difference_in_CO2_emissions_metric_tons
+    FROM
+    (
+    SELECT Continents.entity, Continents.code, CarbonFootprint.year, CO2_emissions_metric_tons, AVG(CO2_emissions_metric_tons) OVER(PARTITION BY CarbonFootprint.year, continents.continent) avg_CO2_emissions_metric_tons
+    FROM CarbonFootprint, Continents
+    WHERE CarbonFootprint.code = Continents.code
+    )
+),
+
+Literacy AS
+(
+    SELECT entity, code, year, literacy_rate - avg_literacy_rate difference_in_avg_literacy_rate
+    FROM
+    (
+    SELECT Continents.entity, Continents.code, CrossCountryLiteracyRates.year, literacy_rate, AVG(literacy_rate) OVER(PARTITION BY CrossCountryLiteracyRates.year, continents.continent) avg_literacy_rate
+    FROM CrossCountryLiteracyRates, Continents
+    WHERE CrossCountryLiteracyRates.code = Continents.code
+    )
+)
+
+
+SELECT TotalPopulationSize.entity, TotalPopulationSize.code, LandArea.year, land_area_in_square_km/total_population_size population_density, difference_in_energy_consumption_per_capita_in_kwh, difference_in_forest_area_square_km, difference_in_deforestation_square_km, difference_in_percent_of_adults_overweight, difference_in_CO2_emissions_metric_tons, difference_in_avg_literacy_rate
+FROM LandArea JOIN TotalPopulationSize ON (LandArea.code = TotalPopulationSize.code AND LandArea.year = TotalPopulationSize.year)
+LEFT OUTER JOIN Energy ON (LandArea.year = Energy.year AND LandArea.code = Energy.code)
+LEFT OUTER JOIN Forest ON (LandArea.year = Forest.year AND LandArea.code = Forest.code)
+LEFT OUTER JOIN Deforestation ON (LandArea.year = Deforestation.year AND LandArea.code = Deforestation.code)
+LEFT OUTER JOIN Obesity ON (LandArea.year = Obesity.year AND LandArea.code = Obesity.code)
+LEFT OUTER JOIN CO2 ON (LandArea.year = CO2.year AND LandArea.code = CO2.code)
+LEFT OUTER JOIN Literacy ON (LandArea.year = Literacy.year AND LandArea.code = Literacy.code)
+WHERE land_area_in_square_km/total_population_size < 5
