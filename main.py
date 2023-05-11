@@ -238,6 +238,6 @@ def update_continent_line_graph(metric):
 
 
 if __name__ == '__main__':
-    serve(app, host='0.0.0.0', port=8050, Debug=True)
+    serve(app, host='0.0.0.0', port=8050, debug=True)
 
     
