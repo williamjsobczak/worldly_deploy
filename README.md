@@ -4,7 +4,7 @@
 http://www.worldly.live
 
 
-### **Created by:**
+## **Created By:**
 Richard Qian <br>
 William Sobczak <br>
 Nikhil Pandya <br>
