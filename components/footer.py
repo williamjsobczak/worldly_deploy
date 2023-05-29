@@ -27,7 +27,7 @@ def footer():
                                 dbc.NavLink("Home", href="/", className = "footer-link"),
                                 dbc.NavLink("About", href="/about", className = "footer-link"),
                                 dbc.NavLink("How to Use", href="/how_to", className = "footer-link"),
-                                dbc.NavLink("Use world.ly", href="/app", className = "footer-link")                                
+                                dbc.NavLink("Get Started", href="/app", className = "footer-link")                               
                             ]),
                             className="centered"
                         ),
@@ -42,9 +42,14 @@ def footer():
                         ),
                         dbc.Col(
                             html.Div([
-                                html.P("Richard Qian"),
-                                html.P("William Sobczak"),
-                                html.P("Nikhil Pandya"),
+                                html.Br(),
+                                html.Br(),
+                                html.A(
+                                    "GitHub Repository",
+                                    href='https://github.com/WilliamSobczak/worldly_deploy.git',
+                                    target="_blank",
+                                    style={'font-size': '25px'}
+                                )
                             ]),
                             className="centered"
                         ),

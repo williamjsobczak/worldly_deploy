@@ -3,6 +3,12 @@
 ## **Visit the Live Webpage Below fron your Browser:**
 http://www.worldly.live
 
+
+### **Created by:**
+Richard Qian
+William Sobczak
+Nikhil Pandya 
+
 ## **Configuration Instructions For Windows**
 
 1. Clone the world.ly repository on your local device
@@ -113,5 +119,4 @@ http://www.worldly.live
 4. Open http://127.0.0.1:8050/ on a web browser
 
 
-### **Credits:**
-Created by Group 2 
+
