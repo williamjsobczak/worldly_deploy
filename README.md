@@ -5,9 +5,9 @@ http://www.worldly.live
 
 
 ### **Created by:**
-Richard Qian \n
-William Sobczak \n
-Nikhil Pandya \n
+Richard Qian <br>
+William Sobczak <br>
+Nikhil Pandya <br>
 
 ## **Configuration Instructions For Windows**
 
