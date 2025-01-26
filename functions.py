@@ -14,7 +14,7 @@ def query_db(sql_query):
 
     conn=oracledb.connect(
      user="williamsobczak",
-     password="GoodPa$$w0rd",
+     password="GoodPa$$w0rd1",
      dsn="ofvc0afuiao4hmzy_low",
      config_dir="Wallet_OFVC0AFUIAO4HMZY-3",
      wallet_location="Wallet_OFVC0AFUIAO4HMZY-3",
